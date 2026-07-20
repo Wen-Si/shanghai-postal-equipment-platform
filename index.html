@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>上海邮政揽投场地工艺设备智能配置平台</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-area">
+                <div class="logo-icon">📦</div>
+                <div class="logo-text">
+                    <h1>上海邮政揽投场地工艺设备智能配置平台</h1>
+                    <p>基于GLM-4.5-Flash大模型 · 设备配置方案智能生成系统</p>
+                </div>
+            </div>
+            <div class="header-badge">
+                <span class="badge">AI驱动</span>
+                <span class="badge">数据决策</span>
+                <span class="badge">标准化模板</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <!-- 左侧：参数输入 -->
+        <section class="input-panel">
+            <div class="panel-header">
+                <h2>📋 场地基础参数输入</h2>
+                <p class="panel-desc">请填写场地各项参数，系统将自动计算评分并生成设备配置方案</p>
+            </div>
+            <form id="parameterForm" class="param-form">
+                <div class="form-section">
+                    <h3 class="section-title">场地条件 <span class="weight-tag">权重 60%</span></h3>
+                    <div class="form-grid">
+                        <div class="form-item">
+                            <label>操作区域面积 (m²)</label>
+                            <input type="number" id="area" value="550" min="30" max="5000" required>
+                            <span class="hint">全市75%场地小于500m²</span>
+                        </div>
+                        <div class="form-item">
+                            <label>场地形状</label>
+                            <select id="shape">
+                                <option value="regular">规整矩形</option>
+                                <option value="irregular">不规则异形</option>
+                                <option value="L-shape">L型</option>
+                                <option value="U-shape">U型</option>
+                            </select>
+                        </div>
+                        <div class="form-item">
+                            <label>净层高 (m)</label>
+                            <input type="number" id="height" value="6" min="2.5" max="15" step="0.1" required>
+                        </div>
+                        <div class="form-item">
+                            <label>产权类型</label>
+                            <select id="property">
+                                <option value="owned">自有场地</option>
+                                <option value="leased">租赁场地</option>
+                            </select>
+                        </div>
+                        <div class="form-item">
+                            <label>楼层承重 (kg/m²)</label>
+                            <input type="number" id="loadCapacity" value="500" min="200" max="2000">
+                        </div>
+                        <div class="form-item">
+                            <label>用电容量 (kW)</label>
+                            <input type="number" id="powerCapacity" value="30" min="5" max="200">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3 class="section-title">业务压力 <span class="weight-tag">权重 25%</span></h3>
+                    <div class="form-grid">
+                        <div class="form-item">
+                            <label>日均处理量 (件)</label>
+                            <input type="number" id="dailyVolume" value="25000" min="200" max="100000" required>
+                        </div>
+                        <div class="form-item">
+                            <label>旺季峰值量 (件)</label>
+                            <input type="number" id="peakVolume" value="36000" min="200" max="150000">
+                        </div>
+                        <div class="form-item">
+                            <label>高峰持续天数</label>
+                            <input type="number" id="peakDays" value="10" min="0" max="60">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3 class="section-title">人工压力 <span class="weight-tag">权重 5%</span></h3>
+                    <div class="form-grid">
+                        <div class="form-item">
+                            <label>生产人员数量</label>
+                            <input type="number" id="staffCount" value="97" min="1" max="500" required>
+                        </div>
+                        <div class="form-item">
+                            <label>场地利用率 (%)</label>
+                            <input type="number" id="utilization" value="85" min="10" max="100">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3 class="section-title">自动化适配能力 <span class="weight-tag">权重 10%</span></h3>
+                    <div class="form-grid">
+                        <div class="form-item">
+                            <label>可上机率 (%)</label>
+                            <input type="number" id="machineRate" value="90" min="0" max="100">
+                            <span class="hint">全市不可上机件占比超10%</span>
+                        </div>
+                        <div class="form-item">
+                            <label>分拣道段数</label>
+                            <input type="number" id="routeCount" value="74" min="1" max="300" required>
+                        </div>
+                        <div class="form-item">
+                            <label>现有设备情况</label>
+                            <select id="existingEquipment">
+                                <option value="none">无设备</option>
+                                <option value="three-stage" selected>三段式设备</option>
+                                <option value="sorter">已有分拣机</option>
+                            </select>
+                        </div>
+                        <div class="form-item">
+                            <label>投资预算 (万元)</label>
+                            <input type="number" id="budget" value="60" min="5" max="500">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary" id="analyzeBtn">
+                        <span>🚀</span> 智能分析与方案生成
+                    </button>
+                    <button type="button" class="btn-secondary" id="resetBtn">重置参数</button>
+                    <button type="button" class="btn-tertiary" id="loadCaseBtn">载入案例数据</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- 右侧：结果展示 -->
+        <section class="results-panel" id="resultsPanel">
+            <div class="empty-state" id="emptyState">
+                <div class="empty-icon">📊</div>
+                <h3>等待分析</h3>
+                <p>请在左侧填写场地参数，点击"智能分析与方案生成"按钮<br>系统将基于综合评分模型自动计算并生成设备配置方案</p>
+                <div class="model-info">
+                    <div class="model-info-item">
+                        <span class="model-info-label">评分维度</span>
+                        <span class="model-info-value">4大维度 · 8项指标</span>
+                    </div>
+                    <div class="model-info-item">
+                        <span class="model-info-label">设备类型</span>
+                        <span class="model-info-value">7类分拣设备</span>
+                    </div>
+                    <div class="model-info-item">
+                        <span class="model-info-label">AI引擎</span>
+                        <span class="model-info-value">GLM-4.5-Flash</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-content" id="resultsContent" style="display:none;">
+                <!-- 评分仪表盘 -->
+                <div class="dashboard-section">
+                    <h2>📈 综合评分结果</h2>
+                    <div class="score-dashboard">
+                        <div class="main-score-card">
+                            <div class="score-ring" id="scoreRing">
+                                <svg viewBox="0 0 120 120">
+                                    <circle cx="60" cy="60" r="52" fill="none" stroke="#e0e0e0" stroke-width="10"/>
+                                    <circle cx="60" cy="60" r="52" fill="none" stroke="#006233" stroke-width="10"
+                                        stroke-dasharray="326.7" stroke-dashoffset="326.7" id="scoreCircle"
+                                        transform="rotate(-90 60 60)"/>
+                                </svg>
+                                <div class="score-number" id="totalScore">0</div>
+                            </div>
+                            <div class="score-grade-label" id="scoreGrade">--</div>
+                            <div class="score-recommendation" id="scoreRec">--</div>
+                        </div>
+                        <div class="sub-scores">
+                            <div class="sub-score-card">
+                                <div class="sub-score-header">
+                                    <span class="sub-score-icon">🏢</span>
+                                    <span class="sub-score-name">场地条件</span>
+                                    <span class="sub-score-weight">60%</span>
+                                </div>
+                                <div class="sub-score-value" id="siteScore">0</div>
+                                <div class="sub-score-bar"><div class="bar-fill" id="siteBar"></div></div>
+                            </div>
+                            <div class="sub-score-card">
+                                <div class="sub-score-header">
+                                    <span class="sub-score-icon">📦</span>
+                                    <span class="sub-score-name">业务压力</span>
+                                    <span class="sub-score-weight">25%</span>
+                                </div>
+                                <div class="sub-score-value" id="businessScore">0</div>
+                                <div class="sub-score-bar"><div class="bar-fill" id="businessBar"></div></div>
+                            </div>
+                            <div class="sub-score-card">
+                                <div class="sub-score-header">
+                                    <span class="sub-score-icon">👷</span>
+                                    <span class="sub-score-name">人工压力</span>
+                                    <span class="sub-score-weight">5%</span>
+                                </div>
+                                <div class="sub-score-value" id="laborScore">0</div>
+                                <div class="sub-score-bar"><div class="bar-fill" id="laborBar"></div></div>
+                            </div>
+                            <div class="sub-score-card">
+                                <div class="sub-score-header">
+                                    <span class="sub-score-icon">🤖</span>
+                                    <span class="sub-score-name">自动化适配</span>
+                                    <span class="sub-score-weight">10%</span>
+                                </div>
+                                <div class="sub-score-value" id="autoScore">0</div>
+                                <div class="sub-score-bar"><div class="bar-fill" id="autoBar"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 设备配置模板 -->
+                <div class="templates-section">
+                    <h2>🏭 设备配置参考模板</h2>
+                    <div id="templatesContainer" class="templates-grid"></div>
+                </div>
+
+                <!-- AI分析报告 -->
+                <div class="ai-report-section">
+                    <h2>🤖 AI智能分析报告</h2>
+                    <div class="ai-report-toolbar">
+                        <button class="btn-ai" id="generateReportBtn">生成AI详细报告</button>
+                        <span class="ai-engine-info">引擎：GLM-4.5-Flash</span>
+                    </div>
+                    <div class="ai-status" id="aiStatus"></div>
+                    <div class="ai-report-content" id="aiReportContent"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2026 上海邮政揽投生产场地工艺设备应用前瞻性研究项目 · 工程设计院</p>
+        <p class="footer-sub">基于综合评分模型（场地条件60% + 业务压力25% + 人工压力5% + 自动化适配10%）· AI引擎：智谱GLM-4.5-Flash</p>
+    </footer>
+
+    <script src="js/config.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/scoring.js"></script>
+    <script src="js/recommendation.js"></script>
+    <script src="js/ai.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
